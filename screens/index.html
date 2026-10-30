@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campus Lost &amp; Found Sketches</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: one screen at a time. Flat tone steps instead of lines, one green accent, pill buttons, items drawn in code. */
+  :root {
+    --bg: #f3f5f2; --paper: #ffffff; --soft: #e9ece8; --fg: #15181a; --muted: #5a6166;
+    --line: #d5d9d3; --accent: #0b7a5c; --on-accent: #ffffff; --accent-soft: #dff1ea;
+    --danger: #b3261e; --danger-soft: #fbe9e6;
+    --c-ink: #2a2f33; --c-blue: #3d6f94; --c-green: #3f8a68; --c-red: #b8483f; --c-amber: #c78a1f; --c-grey: #8a9197; --c-pale: #f1f3f0;
+    --t1: #e0e9e3; --t2: #e3e8ee; --t3: #ece7de;
+    --font: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #101213; --paper: #181b1c; --soft: #232728; --fg: #ecefed; --muted: #9ba3a7;
+    --line: #333839; --accent: #3fc29b; --on-accent: #052b20; --accent-soft: #163a2f;
+    --danger: #f1887f; --danger-soft: #3a1f1c; --c-pale: #d9dcd8;
+    --t1: #1e2a25; --t2: #202531; --t3: #2b2721; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #101213; --paper: #181b1c; --soft: #232728; --fg: #ecefed; --muted: #9ba3a7;
+    --line: #333839; --accent: #3fc29b; --on-accent: #052b20; --accent-soft: #163a2f;
+    --danger: #f1887f; --danger-soft: #3a1f1c; --c-pale: #d9dcd8;
+    --t1: #1e2a25; --t2: #202531; --t3: #2b2721; color-scheme: dark }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 400 16px/1.5 var(--font); background: var(--bg); color: var(--fg); }
+  a { color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: clamp(24px, 3vw, 32px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 650; text-wrap: balance; }
+  h2 { font-size: 20px; line-height: 1.2; letter-spacing: -0.01em; font-weight: 650; }
+  h3 { font-size: 16px; line-height: 1.3; font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .bar { padding-block: 18px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .bar-in { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .brand { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; text-decoration: none; margin-right: auto; }
+  .nav { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .nav a { text-decoration: none; color: var(--muted); font-weight: 500; }
+  .nav a:hover { color: var(--fg); }
+
+  main { padding-block: 16px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .screen { display: none; max-width: 1120px; margin: 0 auto; }
+  .screen.active { display: block; }
+  .head { display: flex; flex-direction: column; gap: 8px; margin: 24px 0 28px; }
+  .cap { font-size: 14px; color: var(--muted); }
+  .cap b { color: var(--fg); font-weight: 600; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 999px; background: var(--soft); color: var(--fg); font: 600 15px var(--font); text-decoration: none; border: 0; cursor: pointer; transition: transform .12s ease, background .12s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); }
+  .btn.text { background: none; padding: 0 8px; color: var(--accent); }
+  .btn.danger { background: var(--danger-soft); color: var(--danger); }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+
+  .card { background: var(--paper); border-radius: 20px; padding: 24px; min-width: 0; }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; align-items: start; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+
+  label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  input, select, textarea { width: 100%; min-height: 46px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--fg); font: 400 16px var(--font); }
+  textarea { resize: vertical; }
+  .ai-field input, .ai-field textarea, .ai-field select { background: var(--accent-soft); border-color: transparent; }
+  .tag { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; margin-left: 6px; }
+  .err { color: var(--danger); font-size: 14px; font-weight: 500; }
+  .invalid input { border-color: var(--danger); }
+  .note { background: var(--soft); border-radius: 14px; padding: 14px 16px; font-size: 15px; }
+  .note.ai { background: var(--accent-soft); }
+  .note.bad { background: var(--danger-soft); color: var(--danger); }
+
+  .pill { display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--fg); color: var(--bg); width: fit-content; }
+  .pill.found { background: var(--accent); color: var(--on-accent); }
+  .pill.soft { background: var(--soft); color: var(--fg); }
+  .pill.warn { background: var(--danger-soft); color: var(--danger); }
+
+  .ph { aspect-ratio: 4 / 3; border-radius: 16px; display: grid; place-items: center; position: relative; overflow: hidden; background: var(--t1); }
+  .ph.t2 { background: var(--t2); } .ph.t3 { background: var(--t3); }
+  .ph svg { width: 78%; height: 78%; }
+  .ph.big { aspect-ratio: 16 / 11; }
+  .ph .over { position: absolute; border-radius: 8px; background: var(--soft); border: 2px dashed var(--accent); font-size: 12px; font-weight: 700; color: var(--muted); display: flex; align-items: center; padding-left: 8px; }
+  .thumbs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .thumbs .ph { border-radius: 12px; }
+
+  .item { text-decoration: none; background: var(--paper); border-radius: 20px; padding: 10px 10px 18px; display: flex; flex-direction: column; gap: 12px; transition: transform .15s ease; }
+  .item:hover { transform: translateY(-3px); }
+  .item .meta { padding: 0 8px; display: flex; flex-direction: column; gap: 6px; }
+  .item p { color: var(--muted); font-size: 14px; }
+
+  .search { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px; }
+  .search input[type="search"] { min-height: 56px; border-radius: 999px; padding: 0 24px; font-size: 17px; border-color: transparent; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filters select, .filters input { width: auto; min-width: 150px; border-radius: 999px; border-color: transparent; background: var(--paper); }
+
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; margin: 18px 0; }
+  .facts dt { color: var(--muted); } .facts dd { margin: 0; font-weight: 500; }
+
+  .drop { border: 2px dashed var(--line); border-radius: 20px; min-height: 260px; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); background: var(--paper); }
+  .drop strong { color: var(--fg); font-size: 20px; display: block; margin-bottom: 4px; }
+
+  .hero-panel { background: var(--accent); color: var(--on-accent); border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: flex-end; min-height: 320px; }
+  .hero-panel h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 650; }
+  .hero-panel p { margin-top: 12px; opacity: .9; max-width: 32ch; }
+
+  .chat { display: flex; flex-direction: column; gap: 10px; min-height: 280px; }
+  .bubble { padding: 10px 16px; border-radius: 18px; background: var(--soft); max-width: 82%; }
+  .bubble.me { align-self: flex-end; background: var(--accent); color: var(--on-accent); }
+  .chat-in { display: flex; gap: 10px; margin-top: 16px; }
+
+  .tw { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  th { text-align: left; font-size: 13px; font-weight: 600; color: var(--muted); padding: 8px 12px 8px 0; }
+  td { padding: 14px 12px 14px 0; border-top: 1px solid var(--line); vertical-align: middle; }
+  td.act { text-align: right; white-space: nowrap; }
+  .sec { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+
+  .dialog { background: var(--paper); border-radius: 20px; padding: 24px; max-width: 420px; box-shadow: 0 18px 50px rgba(0,0,0,.22); }
+  .center { max-width: 560px; margin: 40px auto; text-align: left; }
+  .answers { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .answers li { background: var(--soft); border-radius: 12px; padding: 12px 14px; }
+  .answers span { display: block; font-size: 13px; color: var(--muted); }
+
+  /* Header follows the role of the visible screen. No data-role means a registered user. */
+  .nav [data-for] { display: none; }
+  body:has(.screen.active:not([data-role])) .nav [data-for~="user"],
+  body:has(.screen.active[data-role="guest"]) .nav [data-for~="guest"],
+  body:has(.screen.active[data-role="admin"]) .nav [data-for~="admin"] { display: inline-flex; }
+
+  .wait { height: 8px; border-radius: 999px; background: var(--paper); margin-top: 10px; overflow: hidden; }
+  .wait span { display: block; width: 60%; height: 100%; background: var(--accent); }
+  .areas li { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+  @media (prefers-reduced-motion: reduce) { .btn, .item { transition: none; } .btn:hover, .item:hover { transform: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-wallet" viewBox="0 0 160 120"><rect x="28" y="32" width="104" height="62" rx="12" style="fill:var(--il1)"/><rect x="28" y="32" width="104" height="20" rx="12" style="fill:var(--il2)"/><circle cx="114" cy="72" r="8" style="fill:var(--il3)"/></symbol>
+  <symbol id="i-umbrella" viewBox="0 0 160 120"><path d="M26 66 Q80 -2 134 66 Z" style="fill:var(--il1)"/><path d="M80 66 V98 q0 9 -9 9 q-9 0 -9 -9" fill="none" stroke-width="6" stroke-linecap="round" style="stroke:var(--il2)"/><circle cx="80" cy="22" r="4" style="fill:var(--il2)"/></symbol>
+  <symbol id="i-card" viewBox="0 0 160 120"><rect x="24" y="26" width="112" height="68" rx="10" style="fill:var(--il3)"/><circle cx="56" cy="54" r="11" style="fill:var(--il1)"/><path d="M38 84 q18 -22 36 0 Z" style="fill:var(--il1)"/><rect x="84" y="44" width="40" height="7" rx="3" style="fill:var(--il2)"/><rect x="84" y="58" width="30" height="7" rx="3" style="fill:var(--il2)"/><rect x="84" y="72" width="36" height="7" rx="3" style="fill:var(--il2)"/></symbol>
+  <symbol id="i-keys" viewBox="0 0 160 120"><circle cx="58" cy="58" r="22" fill="none" stroke-width="7" style="stroke:var(--il1)"/><rect x="78" y="54" width="56" height="9" rx="4" style="fill:var(--il2)"/><rect x="112" y="63" width="8" height="12" style="fill:var(--il2)"/><rect x="126" y="63" width="8" height="9" style="fill:var(--il2)"/><rect x="48" y="84" width="22" height="16" rx="5" style="fill:var(--il3)"/></symbol>
+  <symbol id="i-charger" viewBox="0 0 160 120"><rect x="46" y="36" width="46" height="44" rx="9" style="fill:var(--il1)"/><rect x="56" y="22" width="7" height="16" rx="2" style="fill:var(--il2)"/><rect x="75" y="22" width="7" height="16" rx="2" style="fill:var(--il2)"/><path d="M92 62 q40 -2 34 34" fill="none" stroke-width="6" stroke-linecap="round" style="stroke:var(--il2)"/></symbol>
+  <symbol id="i-bottle" viewBox="0 0 160 120"><rect x="62" y="38" width="36" height="66" rx="13" style="fill:var(--il1)"/><rect x="70" y="24" width="20" height="16" rx="4" style="fill:var(--il2)"/><rect x="67" y="15" width="26" height="11" rx="4" style="fill:var(--il3)"/><rect x="62" y="62" width="36" height="14" style="fill:var(--il3)"/></symbol>
+</svg>
+
+<header class="bar"><div class="bar-in">
+  <a class="brand" href="#browse">Campus Lost &amp; Found</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#browse">Browse</a>
+    <a href="#my-reports" data-for="user">My reports</a>
+    <a href="#admin" data-for="admin">Admin</a>
+    <a href="#login" data-for="guest">Log in</a>
+    <a href="#login" data-for="user admin">Log out</a>
+    <a class="btn primary" href="#new-photo" data-for="user">Report an item</a>
+  </nav>
+</div></header>
+
+<main>
+
+<section class="screen" id="browse">
+  <div class="head"><h1>Lost something on campus? Look here first.</h1><p class="cap"><b>Browse</b> · Guest, Registered, Admin · FR-03 · Guests see Log in instead of My reports, Report an item and Log out</p></div>
+  <div class="search">
+    <input type="search" id="q" placeholder="Search by keyword, for example wallet" aria-label="Search">
+    <div class="filters">
+      <select aria-label="Type"><option>Lost and found</option><option>Lost</option><option>Found</option></select>
+      <select aria-label="Category"><option>Any category</option></select>
+      <select aria-label="Location"><option>Anywhere on campus</option></select>
+      <input type="date" aria-label="Date from"><input type="date" aria-label="Date to">
+    </div>
+  </div>
+  <div class="grid">
+    <a class="item" href="#detail"><div class="ph" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div><div class="meta"><span class="pill found">Found</span><h3>Black leather wallet</h3><p>Library, 2nd floor · 24 Oct</p></div></a>
+    <a class="item" href="#detail"><div class="ph t2" style="--il1:var(--c-blue);--il2:var(--c-ink);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-umbrella"/></svg></div><div class="meta"><span class="pill">Lost</span><h3>Blue umbrella</h3><p>Cafeteria · 26 Oct</p></div></a>
+    <a class="item" href="#detail"><div class="ph t3" style="--il1:var(--c-green);--il2:var(--c-ink);--il3:var(--c-pale)"><svg aria-hidden="true"><use href="#i-card"/></svg></div><div class="meta"><span class="pill found">Found</span><h3>Student card</h3><p>Block B entrance · 22 Oct</p></div></a>
+    <a class="item" href="#detail"><div class="ph t2" style="--il1:var(--c-grey);--il2:var(--c-red);--il3:var(--c-amber)"><svg aria-hidden="true"><use href="#i-keys"/></svg></div><div class="meta"><span class="pill">Lost</span><h3>Keys with red fob</h3><p>Sports hall · 21 Oct</p></div></a>
+    <a class="item" href="#detail"><div class="ph" style="--il1:var(--c-pale);--il2:var(--c-ink);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-charger"/></svg></div><div class="meta"><span class="pill found">Found</span><h3>Phone charger</h3><p>Lab 3 · 20 Oct</p></div></a>
+    <a class="item" href="#detail"><div class="ph t3" style="--il1:var(--c-red);--il2:var(--c-ink);--il3:var(--c-pale)"><svg aria-hidden="true"><use href="#i-bottle"/></svg></div><div class="meta"><span class="pill">Lost</span><h3>Red water bottle</h3><p>Lecture hall A · 19 Oct</p></div></a>
+  </div>
+</section>
+
+<section class="screen" id="detail">
+  <div class="head"><h1>Black leather wallet</h1><p class="cap"><b>Detail</b> · Guest, Registered · FR-03, FR-05, FR-08 · Private details never appear here (FR-07) · Contact details of lost items are for logged-in users only</p></div>
+  <div class="two">
+    <div>
+      <div class="ph big" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+      <div class="thumbs">
+        <div class="ph t2" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+        <div class="ph t3" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+        <div class="ph" style="background:var(--soft)"></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="pill found">Found</span>
+      <dl class="facts">
+        <dt>Category</dt><dd>Wallet</dd>
+        <dt>Colour</dt><dd>Black</dd>
+        <dt>Location</dt><dd>Library, 2nd floor</dd>
+        <dt>Date</dt><dd>24 October</dd>
+      </dl>
+      <p>Found on a desk near the window.</p>
+      <div class="note" style="margin-top:18px">Contact details are hidden. The finder shares them after approving your claim.</div>
+      <div class="actions"><a class="btn primary" href="#claim">This is mine</a><a class="btn" href="#login">Log in first</a><a class="btn text" href="#browse">Back to list</a></div>
+    </div>
+  </div>
+  <h2 style="margin:36px 0 16px">The same page for a lost item</h2>
+  <div class="two">
+    <div class="ph t2" style="--il1:var(--c-blue);--il2:var(--c-ink);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-umbrella"/></svg></div>
+    <div class="card">
+      <span class="pill">Lost</span>
+      <dl class="facts">
+        <dt>Category</dt><dd>Umbrella</dd>
+        <dt>Colour</dt><dd>Blue</dd>
+        <dt>Location</dt><dd>Cafeteria</dd>
+        <dt>Date</dt><dd>26 October</dd>
+      </dl>
+      <p>Lost near the cafeteria.</p>
+      <div class="note" style="margin-top:18px">Logged-in users see: "Contact the owner at owner@example.edu."</div>
+      <div class="note" style="margin-top:10px">Guests see: "Log in to see contact details of lost items."</div>
+      <div class="actions"><a class="btn" href="#login">Log in first</a><a class="btn text" href="#browse">Back to list</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="login" data-role="guest">
+  <div class="head"><h1>Get it back to who lost it.</h1><p class="cap"><b>Log in / Register</b> · Guest · FR-01</p></div>
+  <div class="two">
+    <div class="hero-panel"><h2>One place for everything found on campus.</h2><p>Use your university e-mail to report, search and claim.</p></div>
+    <div class="stack">
+      <div class="card stack">
+        <h2>Log in</h2>
+        <label>University e-mail<input type="email" id="le"></label>
+        <label>Password<input type="password" id="lp"></label>
+        <p class="err">Example error: "This account has been deactivated."</p>
+        <div class="actions" style="margin-top:4px"><a class="btn primary" href="#browse">Log in</a><a class="btn text" href="#admin">Demo: log in as administrator</a></div>
+      </div>
+      <div class="card stack">
+        <h2>Create an account</h2>
+        <label>Full name<input id="rn"></label>
+        <label>University e-mail<input type="email" id="re"></label>
+        <label class="invalid">Password, at least 8 characters<input type="password" id="rp"><span class="err">Password must be at least 8 characters.</span></label>
+        <div class="actions" style="margin-top:4px"><a class="btn" href="#browse">Create account</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="new-photo">
+  <div class="head"><h1>Add photos of the item</h1><p class="cap"><b>New report, photos</b> · Registered · FR-05, FR-06, FR-12, NFR-04</p></div>
+  <div class="drop"><div><strong>Drop up to 3 photos here</strong>JPEG or PNG, up to 5 MB each<div class="actions" style="justify-content:center;margin-top:14px"><a class="btn" href="#new-photo">Choose photos</a></div></div></div>
+  <p class="err" style="margin-top:12px">Example error: "wallet.png is larger than 5 MB."</p>
+  <div class="note ai" style="margin-top:12px" role="status">While the AI works: "Reading your photo. Suggestions usually arrive within 10 seconds."<div class="wait"><span></span></div></div>
+  <div class="actions">
+    <a class="btn primary" href="#new-form">Analyse with AI</a>
+    <a class="btn" href="#new-form">Fill in manually</a>
+    <a class="btn" href="#new-chat">Use the chat assistant</a>
+    <a class="btn text" href="#new-blur">Demo: sensitive text found</a>
+    <a class="btn text" href="#ai-error">Demo: AI unavailable</a>
+  </div>
+</section>
+
+<section class="screen" id="new-form">
+  <div class="head"><h1>Check the details</h1><p class="cap"><b>New report, form</b> · Registered · FR-02, FR-06, FR-07 · Green fields were filled by AI. Edit anything before saving.</p></div>
+  <div class="two">
+    <div class="stack">
+      <div class="ph big" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+      <p class="note ai">AI suggested the title, category, colour and description from your photo. Nothing is saved until you press Save.</p>
+    </div>
+    <div class="card stack">
+      <label>Type<select id="ft"><option>Found</option><option>Lost</option></select></label>
+      <label class="ai-field"><span>Title <span class="tag">AI</span></span><input id="fti" value="Black leather wallet"></label>
+      <div class="two" style="gap:12px">
+        <label class="ai-field"><span>Category <span class="tag">AI</span></span><input id="fc" value="Wallet"></label>
+        <label class="ai-field"><span>Colour <span class="tag">AI</span></span><input id="fco" value="Black"></label>
+      </div>
+      <label class="ai-field"><span>Description <span class="tag">AI</span></span><textarea id="fd" rows="2">Black leather wallet with a small logo.</textarea></label>
+      <label class="invalid">Location<input id="fl" placeholder="For example Library, 2nd floor"><span class="err">Location is required.</span></label>
+      <div class="two" style="gap:12px">
+        <label class="invalid">Date<input type="date" id="fda"><span class="err">The date cannot be in the future.</span></label>
+        <label>Contact method<input id="fcm" placeholder="E-mail or phone"></label>
+      </div>
+      <label>Private details, never shown publicly<textarea id="fp" rows="2" placeholder="For example: contains a blue bus card"></textarea></label>
+      <div class="actions" style="margin-top:4px"><a class="btn primary" href="#my-reports">Save report</a><a class="btn text" href="#new-photo">Back</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="new-blur">
+  <div class="head"><h1>Hide sensitive text</h1><p class="cap"><b>Blur review</b> · Registered · FR-12 · Only the blurred version is stored and published</p></div>
+  <div class="two">
+    <div class="ph big t3" style="--il1:var(--c-green);--il2:var(--c-ink);--il3:var(--c-pale)">
+      <svg aria-hidden="true"><use href="#i-card"/></svg>
+      <div class="over" style="left:49%;top:33%;width:30%;height:14%">ID number</div>
+      <div class="over" style="left:49%;top:47%;width:30%;height:16%">Full name</div>
+    </div>
+    <div class="card stack">
+      <h2>2 areas found</h2>
+      <p class="note ai">AI marked the ID number and the full name. Move or remove any area, then approve.</p>
+      <ul class="answers areas">
+        <li>ID number <span><a class="btn text" href="#new-blur">Move</a><a class="btn text" href="#new-blur">Remove</a></span></li>
+        <li>Full name <span><a class="btn text" href="#new-blur">Move</a><a class="btn text" href="#new-blur">Remove</a></span></li>
+      </ul>
+      <div class="actions" style="margin-top:4px"><a class="btn primary" href="#new-form">Approve blur</a><a class="btn" href="#new-blur">Add an area</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="new-chat">
+  <div class="head"><h1>Tell the assistant what happened</h1><p class="cap"><b>Chat assistant</b> · Registered · FR-10 · Nothing is saved until you confirm the preview</p></div>
+  <div class="two">
+    <div class="card">
+      <div class="chat">
+        <div class="bubble me">I lost my blue umbrella yesterday near the cafeteria.</div>
+        <div class="bubble">Got it. How can finders contact you?</div>
+        <div class="bubble me">By e-mail.</div>
+      </div>
+      <div class="chat-in"><input id="cm" placeholder="Type a message" aria-label="Message"><a class="btn primary" href="#new-chat">Send</a></div>
+    </div>
+    <div class="card stack">
+      <h2>Preview</h2>
+      <div class="ph t2" style="--il1:var(--c-blue);--il2:var(--c-ink);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-umbrella"/></svg></div>
+      <span class="pill">Lost</span>
+      <h3>Blue umbrella</h3>
+      <p class="cap">Cafeteria · 26 Oct · Contact by e-mail</p>
+      <div class="actions" style="margin-top:4px"><a class="btn primary" href="#my-reports">Confirm and save</a><a class="btn" href="#new-form">Edit in form</a><a class="btn text" href="#browse">Close without saving</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="claim">
+  <div class="head"><h1>Prove it is yours</h1><p class="cap"><b>Claim an item</b> · Registered · FR-08 · The questions come from the finder's private details, which stay hidden</p></div>
+  <div class="two">
+    <div class="item" style="padding-bottom:10px">
+      <div class="ph" style="--il1:var(--c-ink);--il2:var(--c-amber);--il3:var(--c-grey)"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+      <div class="meta"><span class="pill found">Found</span><h3>Black leather wallet</h3><p>Library, 2nd floor · 24 Oct</p></div>
+    </div>
+    <div class="card stack">
+      <h2>3 questions <span class="tag">AI</span></h2>
+      <label>1. What is inside the wallet besides cash?<input id="q1"></label>
+      <label>2. What colour is the inside lining?<input id="q2"></label>
+      <label>3. Which card is kept in the front pocket?<input id="q3"></label>
+      <div class="actions" style="margin-top:4px"><a class="btn primary" href="#my-reports">Send claim</a><a class="btn text" href="#detail">Back</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="my-reports">
+  <div class="head"><h1>My reports</h1><p class="cap"><b>My reports</b> · Registered · FR-04, FR-09 · You can edit, delete or resolve only your own reports</p></div>
+  <div class="card sec">
+    <h2>Reports I posted</h2>
+    <div class="tw"><table>
+      <tr><th>Report</th><th>Status</th><th></th></tr>
+      <tr><td><b>Black leather wallet</b><br><span class="cap">Found</span></td><td><span class="pill warn">1 claim waiting</span></td>
+        <td class="act"><a class="btn text" href="#claim-review">Review claim</a><a class="btn text" href="#my-reports">Mark resolved</a><a class="btn text" href="#new-form">Edit</a><a class="btn text" href="#my-reports">Delete</a></td></tr>
+      <tr><td><b>Blue umbrella</b><br><span class="cap">Lost</span></td><td><span class="pill soft">Open</span></td>
+        <td class="act"><a class="btn text" href="#my-reports">Mark resolved</a><a class="btn text" href="#new-form">Edit</a><a class="btn text" href="#my-reports">Delete</a></td></tr>
+      <tr><td><b>Grey scarf</b><br><span class="cap">Lost</span></td><td><span class="pill soft">Resolved, hidden from the list</span></td>
+        <td class="act"><a class="btn text" href="#new-form">Edit</a><a class="btn text" href="#my-reports">Delete</a></td></tr>
+    </table></div>
+  </div>
+  <div class="card sec" style="margin-top:20px">
+    <h2>Claims I sent</h2>
+    <div class="tw"><table>
+      <tr><th>Item</th><th>Status</th></tr>
+      <tr><td><b>Student card</b></td><td><span class="pill soft">Waiting for the finder</span></td></tr>
+      <tr><td><b>Phone charger</b></td><td><span class="pill found">Approved</span><br><span class="cap">Contact the finder at ali.v@example.edu.</span></td></tr>
+      <tr><td><b>Black headphones</b></td><td><span class="pill warn">Rejected</span><br><span class="cap">The finder rejected this claim. No contact details were shared.</span></td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="screen" id="claim-review">
+  <div class="head"><h1>Review the claim</h1><p class="cap"><b>Claim review</b> · Registered, as the finder · FR-09</p></div>
+  <div class="two">
+    <div class="card stack">
+      <h2>Your private details</h2>
+      <p>Contains a blue bus card and a student ID. The lining is red. A library card is in the front pocket.</p>
+      <p class="cap">Only you see this. Ali V. never does.</p>
+    </div>
+    <div class="card stack">
+      <h2>Answers from Ali V.</h2>
+      <ul class="answers">
+        <li><span>What is inside the wallet besides cash?</span>A blue bus card and a student ID</li>
+        <li><span>What colour is the inside lining?</span>Red</li>
+        <li><span>Which card is kept in the front pocket?</span>Library card</li>
+      </ul>
+      <div class="actions" style="margin-top:4px"><a class="btn primary" href="#my-reports">Approve and share my contact</a><a class="btn danger" href="#my-reports">Reject</a></div>
+      <p class="cap">After approval Ali V. sees your contact details. After rejection Ali V. only sees a rejection message.</p>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="admin" data-role="admin">
+  <div class="head"><h1>Administration</h1><p class="cap"><b>Admin</b> · Administrator · FR-11</p></div>
+  <div class="card sec">
+    <h2>All reports</h2>
+    <div class="tw"><table>
+      <tr><th>Report</th><th>Posted by</th><th></th></tr>
+      <tr><td><b>Phone charger</b><br><span class="cap">Found</span></td><td>Ali V.</td><td class="act"><a class="btn text" href="#detail">View</a><a class="btn text" href="#admin">Remove</a></td></tr>
+      <tr><td><b>Black leather wallet</b><br><span class="cap">Found</span></td><td>Sarp</td><td class="act"><a class="btn text" href="#detail">View</a><a class="btn text" href="#admin">Remove</a></td></tr>
+    </table></div>
+  </div>
+  <div class="card sec" style="margin-top:20px">
+    <h2>All users</h2>
+    <div class="tw"><table>
+      <tr><th>Name</th><th>Status</th><th></th></tr>
+      <tr><td><b>Ali V.</b></td><td><span class="pill found">Active</span></td><td class="act"><a class="btn text" href="#admin">Deactivate</a></td></tr>
+      <tr><td><b>Sarp</b></td><td><span class="pill found">Active</span></td><td class="act"><a class="btn text" href="#admin">Deactivate</a></td></tr>
+      <tr><td><b>Deniz K.</b></td><td><span class="pill warn">Deactivated</span></td><td class="act"></td></tr>
+    </table></div>
+  </div>
+  <div class="dialog stack" style="margin-top:28px" role="dialog" aria-label="Confirm removal">
+    <h2>Remove "Phone charger"?</h2>
+    <p>The report disappears from the public list. This cannot be undone.</p>
+    <div class="actions" style="margin-top:0"><a class="btn danger" href="#admin">Remove</a><a class="btn" href="#admin">Cancel</a></div>
+  </div>
+</section>
+
+<section class="screen" id="ai-error">
+  <div class="center stack">
+    <p class="cap"><b>AI unavailable</b> · Registered · NFR-05 · Shown after 15 seconds without an answer</p>
+    <h1>The AI did not answer.</h1>
+    <p class="note bad">Your photo and everything you typed are still here. You can finish the report yourself.</p>
+    <div class="actions" style="margin-top:0"><a class="btn primary" href="#new-form">Continue manually</a><a class="btn" href="#new-photo">Try again</a></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  // Show the screen whose id is in the URL hash (#detail → <section id="detail">). Default: browse.
+  function show() {
+    const id = location.hash.slice(1) || "browse";
+    document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", show);
+  show();
+</script>
+</html>
